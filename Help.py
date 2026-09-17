@@ -1,13 +1,14 @@
 import numpy as np
 
-k = 5.
-m = 3.
+k = 10.
+m = 1.
+b = 0.3
 
 omega = np.sqrt(k/m)
 
 A = np.array([
     [0., 1.],
-    [-omega**2, 0.]
+    [-omega**2, -b/m]
     ])
  
 lam, C = np.linalg.eig(A)
@@ -24,7 +25,7 @@ D = np.linalg.solve(C, X0)
 print("Koeficienty D", D)
 
 #Vypocet
-t_pole = np.linspace(0., 10., 100)
+t_pole = np.linspace(0., 20., 1000)
 x_pole = t_pole * 0.
 
 i = 0
@@ -43,7 +44,7 @@ plt.plot(t_pole, x_pole)
 plt.title("Harmonicky oscilator")
 plt.xlabel("t [s]")
 plt.ylabel("x [m]")
-plt.grid()
+plt.grid(True, alpha=0.3, linestyle="--", color="gray")
 plt.show()
 
 print("Perioda oscilaci T = ", 2*np.pi/omega)
