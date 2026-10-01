@@ -6,7 +6,7 @@ k = 1.0
 m = 1.0
 
 omega = np.sqrt(k/m)
-xiList = [0.1, 1, 1.5] 
+xiList = [0.1, 1.0, 1.5] 
 bList = [2 * xi * omega * m for xi in xiList]
 xi1 = 0.1
 xi2 = 1
@@ -21,16 +21,20 @@ v0 = 0
 #Počáteční podmínky
 y = np.array([
     x0,
+    x0,
+    x0,
     v0,
+    v0,
+    v0
 ])
 
 #Pravá strana diferenciální rovnice
-def f(y, b, t):
-    x = y[0]
-    v = y[1]
+def f(y, b1, b2, b3, t):
+    x = y[0:3]
+    v = y[3:7]
     dxdt = v
-    dvdt = -k/m * x - b/m * v
-    return np.array([dxdt, dvdt])
+    dvdt = np.array([-k/m * x[0] - b1/m * v[0], -k/m * x[1] - b2/m * v[1], -k/m * x[2] - b3/m * v[2]])
+    return np.concatenate((dxdt, dvdt))
 
 #Eulerova metoda
 t = 0
@@ -39,59 +43,29 @@ dt = 0.01
 
 #Definice pro ukládání hodnot pro graf
 t_plot = []
-x_plot = []
-x_plot.append(y[0])
+x1_plot = []
+x2_plot = []
+x3_plot = []
+x1_plot.append(y[0])
+x2_plot.append(y[0])
+x3_plot.append(y[0])
 t_plot.append(t)
 
 #Cyklus vypočítávající hodnoty v čase
 while t < T:
-    y = y + dt * f(y, b1, t)
+    y = y + dt * f(y, b1, b2, b3, t)
     t = t + dt
 
     #Uložení hodnot pro graf
-    x_plot.append(y[0])
+    x1_plot.append(y[0])
+    x2_plot.append(y[1])
+    x3_plot.append(y[2])
     t_plot.append(t)
 
 
-plt.plot(t_plot, x_plot)
-t_plot = []
-x_plot = []
-t = 0
-y = np.array([
-    x0,
-    v0,
-])
-
-#Cyklus vypočítávající hodnoty v čase
-while t < T:
-    y = y + dt * f(y, b2, t)
-    t = t + dt
-
-    #Uložení hodnot pro graf
-    x_plot.append(y[0])
-    t_plot.append(t)
-
-
-plt.plot(t_plot, x_plot)
-t_plot = []
-x_plot = []
-t = 0
-y = np.array([
-    x0,
-    v0,
-])
-
-#Cyklus vypočítávající hodnoty v čase
-while t < T:
-    y = y + dt * f(y, b3, t)
-    t = t + dt
-
-    #Uložení hodnot pro graf
-    x_plot.append(y[0])
-    t_plot.append(t)
-
-
-plt.plot(t_plot, x_plot)
+plt.plot(t_plot, x1_plot)
+plt.plot(t_plot, x2_plot)
+plt.plot(t_plot, x3_plot)
 plt.xlabel('Čas [s]')
 plt.ylabel('Výchylka [m]')
 plt.title('Tlumené oscilace')
